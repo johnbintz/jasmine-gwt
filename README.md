@@ -63,6 +63,7 @@ Before ->
 
 After ->
   @server.restore()
+```
 
 *Important*: Use single-arrows when defining steps. Each block of code is executed in the same context, and mucking
 with that would make thing probably not work too well.
