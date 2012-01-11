@@ -59,18 +59,20 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
       describe scenarioName, ->
         _this.spies_ = []
 
-        jasmine.GWT.runHook('Before', _this)
-
         for index in [ 0..._statements.length ]
           [ type, name, param ] = _statements[index]
 
           _this._type = type
           _this._name = name
 
-          isLast = (index + 1) == _statements.length
+          runCode = (param, index, args = []) ->
+            isLast = (index + 1) == _statements.length
+            isFirst = (index == 0)
 
-          runCode = (param, isLast, args = []) ->
             it "#{type} #{name}", ->
+              if isFirst
+                jasmine.GWT.runHook('Before', _this)
+
               this.spyOn = (args...) ->
                 this.spies_ = _this.spies_
                 jasmine.Spec.prototype.spyOn.apply(this, args)
@@ -81,11 +83,14 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
 
               param.apply(_this, args)
 
+              if isLast
+                jasmine.GWT.runHook('After', _this)
+
           args = []
 
           if param?
             if typeof param == "function"
-              runCode(param, isLast)
+              runCode(param, index)
               continue
             else
               args = [ param ]
@@ -97,13 +102,13 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
               if match.constructor == RegExp
                 if result = name.match(match)
                   result.shift()
-                  runCode(code, isLast, result.concat(args))
+                  runCode(code, index, result.concat(args))
                   found = true
 
                   break
               else
                 if name == match
-                  runCode(code, isLast)
+                  runCode(code, index)
                   found = true
 
                   break
@@ -140,8 +145,6 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
               )
 
               jasmine.getEnv().currentSpec.addMatcherResult(fakeResult)
-
-        jasmine.GWT.runHook('After', _this)
 
   allStatements: =>
     allStatements = []
