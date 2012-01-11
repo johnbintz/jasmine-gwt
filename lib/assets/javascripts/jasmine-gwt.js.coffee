@@ -57,21 +57,35 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
 
     describe @feature.name, ->
       describe scenarioName, ->
+        _this.spies_ = []
+
         jasmine.GWT.runHook('Before', _this)
 
-        for [ type, name, param ] in _statements
+        for index in [ 0..._statements.length ]
+          [ type, name, param ] = _statements[index]
+
           _this._type = type
           _this._name = name
 
-          runCode = (param, args = []) ->
+          isLast = (index + 1) == _statements.length
+
+          runCode = (param, isLast, args = []) ->
             it "#{type} #{name}", ->
+              this.spyOn = (args...) ->
+                this.spies_ = _this.spies_
+                jasmine.Spec.prototype.spyOn.apply(this, args)
+
+              this.removeAllSpies = ->
+                if isLast
+                  jasmine.Spec.prototype.removeAllSpies.apply(_this)
+
               param.apply(_this, args)
 
           args = []
 
           if param?
             if typeof param == "function"
-              runCode(param)
+              runCode(param, isLast)
               continue
             else
               args = [ param ]
@@ -83,13 +97,13 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
               if match.constructor == RegExp
                 if result = name.match(match)
                   result.shift()
-                  runCode(code, result.concat(args))
+                  runCode(code, isLast, result.concat(args))
                   found = true
 
                   break
               else
                 if name == match
-                  runCode(code)
+                  runCode(code, isLast)
                   found = true
 
                   break
