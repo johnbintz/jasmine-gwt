@@ -56,7 +56,7 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
     _this = this
 
     describe @feature.name, ->
-      it scenarioName, ->
+      describe scenarioName, ->
         jasmine.GWT.runHook('Before', _this)
 
         for [ type, name, param ] in _statements
@@ -64,13 +64,8 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
           _this._name = name
 
           runCode = (param, args = []) ->
-            resultsIndex = jasmine.getEnv().currentSpec.results().getItems().length
-
-            param.apply(_this, args)
-
-            for index in [ resultsIndex...(jasmine.getEnv().currentSpec.results().getItems().length) ]
-              result = jasmine.getEnv().currentSpec.results().getItems()[index]
-              result.message = "[#{type} #{name}] " + result.message
+            it "#{type} #{name}", ->
+              param.apply(_this, args)
 
           args = []
 
