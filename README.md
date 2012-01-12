@@ -33,19 +33,19 @@ Feature 'Complex Backbone View', ->
 Run it and you'll be told you need to define some steps, Cucumber-style:
 
 ``` coffeescript
-When /I render the view/, ->
+When /^I render the view$/, ->
   @result = @view.render()
 
-Then /the view should return itself/, ->
+Then /^the view should return itself$/, ->
   expect(@result).toEqual(@view)
 
-Then /the view should contain "([^"]+)"/, (selector) ->
+Then /^the view should contain "([^"]+)"$/, (selector) ->
   expect($(@view.el)).toContain(selector)
 
-Given /the model has the name "([^"]+)"/, (name) ->
+Given /^the model has the name "([^"]+)"$/, (name) ->
   @model.set(name: name)
 
-Then /the view has the "([^"]+)" with the text "([^"]+)"/, (selector, text) ->
+Then /^the view has the "([^"]+)" with the text "([^"]+)"$/, (selector, text) ->
   expect(view.$(selector)).toHaveText(text)
 ```
 

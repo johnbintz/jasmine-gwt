@@ -113,11 +113,11 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
                 '"([^"]+)"'
 
               if argCount == 0
-                output.push("#{type} /#{name}/, ->")
+                output.push("#{type} /^#{name}$/, ->")
               else
                 args = ("arg#{i}" for i in [ 1..(argCount) ])
 
-                output.push("#{type} /#{name}/, (#{args.join(', ')}) ->")
+                output.push("#{type} /^#{name}$/, (#{args.join(', ')}) ->")
 
               output.push("  @not_defined()")
               output.push("")
