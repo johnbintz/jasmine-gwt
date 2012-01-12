@@ -26,3 +26,5 @@ jasmine.GWT.globals =
   Before: (args...) -> jasmine.GWT.Hook('Before', args...)
   After: (args...) -> jasmine.GWT.Hook('After', args...)
 
+  World: (args...) -> jasmine.GWT.World(args...)
+

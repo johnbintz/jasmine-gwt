@@ -23,6 +23,7 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
 
             it "#{type} #{name}", ->
               if isFirst
+                jasmine.GWT.runHook('World', _this)
                 jasmine.GWT.runHook('Before', _this)
 
               this.spyOn = (args...) ->
