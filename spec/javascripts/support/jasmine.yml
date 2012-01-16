@@ -1,0 +1,7 @@
+src_dir: lib/assets/javascripts
+src_files: [ 'jasmine-gwt.js.coffee' ]
+
+spec_dir: spec/javascripts
+spec_files: [ '**/*_spec.coffee' ]
+
+helpers: [ 'spec_helper.coffee' ]

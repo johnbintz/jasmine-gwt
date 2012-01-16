@@ -39,6 +39,40 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
               if isLast
                 jasmine.GWT.runHook('After', _this)
 
+          runFailure = (type, name, args) ->
+            it "#{type} #{name}", ->
+              output = [ "", "No step defined for #{type} #{name}. Define one using the following:", '' ]
+
+              argCount = args.length
+
+              name = name.replace /\d+/g, (match) ->
+                argCount += 1
+                "(\\d+)"
+
+              name = name.replace /\"[^"]+\"/g, (match) ->
+                argCount += 1
+                '"([^"]+)"'
+
+              if argCount == 0
+                output.push("#{type} /^#{name}$/, ->")
+              else
+                args = ("arg#{i}" for i in [ 1..(argCount) ])
+
+                output.push("#{type} /^#{name}$/, (#{args.join(', ')}) ->")
+
+              output.push("  @not_defined()")
+              output.push("")
+
+              this.addMatcherResult(
+                new jasmine.ExpectationResult(
+                  matcherName: 'steps',
+                  passed: false,
+                  expected: 'to be defined',
+                  actual: "#{type} #{name}",
+                  message: output.join("\n")
+                )
+              )
+
           args = []
 
           if param?
@@ -66,38 +100,7 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
 
                   break
 
-            if !found
-              output = [ "", "No step defined for #{type} #{name}. Define one using the following:", '' ]
-
-              argCount = args.length
-
-              name = name.replace /\d+/g, (match) ->
-                argCount += 1
-                "(\\d+)"
-
-              name = name.replace /\"[^"]+\"/g, (match) ->
-                argCount += 1
-                '"([^"]+)"'
-
-              if argCount == 0
-                output.push("#{type} /#{name}/, ->")
-              else
-                args = ("arg#{i}" for i in [ 1..(argCount) ])
-
-                output.push("#{type} /#{name}/, (#{args.join(', ')}) ->")
-
-              output.push("  @not_defined()")
-              output.push("")
-
-              fakeResult = new jasmine.ExpectationResult(
-                matcherName: 'steps',
-                passed: false,
-                expected: 'to be defined',
-                actual: "#{type} #{name}",
-                message: output.join("\n")
-              )
-
-              jasmine.getEnv().currentSpec.addMatcherResult(fakeResult)
+          runFailure(type, name, args) if !found
 
   allStatements: =>
     allStatements = []
