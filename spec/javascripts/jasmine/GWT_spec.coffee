@@ -61,3 +61,33 @@ describe 'jasmine.GWT', ->
         jasmine.GWT.World(func)
         expect(jasmine.GWT.Hook).toHaveBeenCalledWith('World', func)
 
+  describe '.runHook', ->
+    object = null
+    value = 'value'
+
+    beforeEach ->
+      object = {}
+      jasmine.GWT.Hooks['Hooks'] = [
+        -> this.value = value
+      ]
+
+    it 'should run all the code in the hooks', ->
+      jasmine.GWT.runHook('Hooks', object)
+
+      expect(object.value).toEqual(value)
+
+  describe '.generateWoldMethods', ->
+    object = null
+    method = ->
+
+    beforeEach ->
+      object =
+        method: method
+
+    it 'should add methods to the object', ->
+      newObject = {}
+      runner = jasmine.GWT.generateWorldMethods(object)
+
+      runner.apply(newObject)
+      expect(newObject.method).toEqual(method)
+

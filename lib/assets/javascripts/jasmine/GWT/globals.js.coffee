@@ -1,6 +1,7 @@
 jasmine.GWT.globals =
   Feature: (args...) ->
-    new jasmine.GWT.Feature(args...)
+    feature = new jasmine.GWT.Feature(args...)
+    feature.run()
 
   Background: (args...) ->
     jasmine.GWT.currentFeature_.Background(args...)

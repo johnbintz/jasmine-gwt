@@ -1,7 +1,7 @@
 src_dir: lib/assets/javascripts
-src_files: [ 'jasmine-gwt.js.coffee' ]
+src_files: [ 'jasmine-gwt.js.coffee', 'cabiai.js.coffee' ]
 
 spec_dir: spec/javascripts
-spec_files: [ '**/*_spec.coffee' ]
+spec_files: [ '**/*_spec.*', '*_spec.*' ]
 
 helpers: [ 'spec_helper.coffee' ]
