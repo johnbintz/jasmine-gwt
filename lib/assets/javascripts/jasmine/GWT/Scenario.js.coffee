@@ -15,10 +15,16 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
         if position == 'last'
             jasmine.Spec.prototype.removeAllSpies.apply(context)
 
-      param.apply(context, args)
+      exception = null
+
+      try
+        param.apply(context, args)
+      catch exception
 
       if position == 'last'
         jasmine.GWT.runHook('After', context)
+
+      throw(exception) if exception
 
   @runFailure: (type, name, args) ->
     it "#{type} #{name}", ->
@@ -79,18 +85,22 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
 
         position = 'first'
 
+        calcPosition = (index) ->
+          if (index + 2) == _statements.length then 'last' else 'middle'
+
         for index in [ 0..._statements.length ]
           [ type, name, param ] = _statements[index]
           [ _this._type, _this._name ] = [ type, name ]
 
           args = []
 
-          codeRunner = (thing, args = []) ->
-            jasmine.GWT.Scenario.runCode(type, name, thing, position, _this, args)
+          codeRunner = (thing, pos, args = []) ->
+            jasmine.GWT.Scenario.runCode(type, name, thing, pos, _this, args)
 
           if param?
             if typeof param == "function"
-              codeRunner(param)
+              codeRunner(param, position)
+              position = calcPosition(index)
 
               continue
             else
@@ -100,14 +110,14 @@ class jasmine.GWT.Scenario extends jasmine.GWT.Background
 
           for [ match, code ] in (jasmine.GWT.Steps[type] || [])
             if result = name.match(match)
-              codeRunner(code, result[1..-1].concat(args))
+              codeRunner(code, position, result[1..-1].concat(args))
               found = true
 
               break
 
           jasmine.GWT.Scenario.runFailure(type, name, args) if !found
 
-          position = (if (index + 2) == _statements.length then 'last' else 'middle')
+          position = calcPosition(index)
 
     jasmine.GWT.currentScenario_ = null
 
