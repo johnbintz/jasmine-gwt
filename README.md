@@ -1,5 +1,5 @@
 `jasmine-gwt` provides a cool Given-When-Then syntax not dissimilar to [Cucumber](http://cukes.info/), but
-running entirely in [Jasmine](http://pivotal.github.com/jasmine/). No other dependencies (except CoffeeScript,
+running entirely in [Jasmine](https://jasmine.github.io/). No other dependencies (except CoffeeScript,
 but that'll change.) Also, writing these in CoffeeScript gives you an experience really close to Cucumber, so yeah.
 
 Import the library, say by using Sprockets in your `spec_helper.js.coffee`:
